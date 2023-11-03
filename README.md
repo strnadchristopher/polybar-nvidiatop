@@ -1,6 +1,8 @@
-#Script: nvidiatop
+# Script: nvidiatop
 A polybar script for monitoring Nvidia GPU usage.
 ## Dependencies
+* rust
+* cargo
 * nvidia-smi
 * nvidia gpu
 ## Configuration
@@ -24,3 +26,17 @@ format-prefix = "󰍛 "
 exec = ~/GitHub/polybar-nvidiatop/target/release/polybar-nvidiatop --clock-speed
 interval = 3
 ```
+
+## Installation
+### Building From Source
+In the terminal, `cd` into the directory that you cloned the repository into, and run the following command:
+```
+cargo build --release
+```
+The binary will be located at `target/release/polybar-nvidiatop`.
+
+### Arch Linux
+I plan to add this to the AUR soon.
+
+## Next Steps
+* Have a great day!
