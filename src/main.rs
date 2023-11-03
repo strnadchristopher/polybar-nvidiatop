@@ -21,8 +21,9 @@ impl fmt::Display for OutputOption {
     }
 }
 fn main() {
+    const SHOULD_LOOP: bool = false;
     let args: Vec<String> = env::args().collect();
-    if(args.len() > 1){
+    if args.len() > 1 {
         let output_option = match args[1].as_str(){
             "--free-memory" => OutputOption::MemFreePercentage,
             "--free-memory-mb" => OutputOption::MemFreeMb,
@@ -33,12 +34,40 @@ fn main() {
             "--max-boost-clock-speed" => OutputOption::MaxBoostClockSpeed,
             _ => panic!("Invalid output option"),
         };
-        start_loop(output_option);
-        // println!("{}", output_option);
+        if SHOULD_LOOP{
+            start_loop(output_option);
+        }else{
+            run_once(output_option);
+        }
     }else{
-        start_loop(OutputOption::MemUsagePercentage);
+        if SHOULD_LOOP{
+            start_loop(OutputOption::MemFreePercentage);
+        }else{
+            run_once(OutputOption::MemFreePercentage);
+        }
     }
-    
+}
+
+fn run_once(output_option: OutputOption){
+    let nvml = match Nvml::init(){
+        Ok(result) => result,
+        Err(error) => panic!("Nvml not installed."),
+    };
+
+    let device = match nvml.device_by_index(0){
+        Ok(device) => device,
+        Err(error) => panic!("Could not find NVIDIA device.")
+    };
+    let output_text = match output_option{
+        OutputOption::MemFreePercentage => get_free_memory_percentage(&device),
+        OutputOption::MemFreeMb => get_free_memory_mb(&device),
+        OutputOption::MemUsagePercentage => get_used_memory_percentage(&device),
+        OutputOption::MemUsageMb => get_used_memory_mb(&device),
+        OutputOption::MemTotalMb => get_total_memory_mb(&device),
+        OutputOption::ClockSpeed => get_clock_speed(&device),
+        OutputOption::MaxBoostClockSpeed => get_max_boost_clock_speed(&device),
+    };
+    println!("{}", output_text);
 }
 
 fn start_loop(output_option: OutputOption){
