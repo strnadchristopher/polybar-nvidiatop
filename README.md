@@ -16,6 +16,7 @@ Nvidiatop currently supports the following command-line options:
 --total-memory: Display total memory in MB
 --clock-speed: Display current clock speed in MHz
 --max-boost-clock-speed: Display your gpu's set max boost clock speed in MHz
+--temperature: Display current temperature in C
 ```
 
 ## Module
